@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -47,6 +47,11 @@
             <td>{{ venda[4] }}</td>
         </tr>
         {% endfor %}
+        <tr>
+            <td colspan="4" style="text-align: right; font-weight: bold;">Total</td>
+            <td>{{ soma_total_vendas|format_currency }}</td>
+            <td></td>
+        </tr>
     </table>
 
     <h2>Cadastrar Produto</h2>

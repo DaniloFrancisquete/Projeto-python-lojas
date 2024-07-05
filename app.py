@@ -1,16 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for
 import sqlite3
-from datetime import datetime
 
 app = Flask(__name__)
-
-# Definindo o filtro personalizado
-def format_currency(value):
-    if value is None or value == '':
-        return "R$0,00"
-    return f"R${value:,.2f}".replace(',', 'X').replace('.', ',').replace('X', '.')
-
-app.jinja_env.filters['format_currency'] = format_currency
 
 def init_db():
     conn = sqlite3.connect('lojista.db')
@@ -44,56 +35,84 @@ def init_db():
     conn.commit()
     conn.close()
 
+def format_currency(value):
+    if value is None:
+        return "R$0,00"
+
+    try:
+        numeric_value = float(value)
+        return f"R${numeric_value:,.2f}".replace(',', 'X').replace('.', ',').replace('X', '.')
+    except (TypeError, ValueError):
+        return "Valor inválido"
+
+# Registrando o filtro format_currency no ambiente Jinja2
+app.jinja_env.filters['format_currency'] = format_currency
+
 @app.route('/')
 def index():
     conn = sqlite3.connect('lojista.db')
     cursor = conn.cursor()
-    
-    # Seleciona vendas e calcula valor_total considerando o preço dos produtos
+
+    # Consulta para obter os produtos cadastrados
+    cursor.execute('SELECT * FROM produtos')
+    produtos = cursor.fetchall()
+
+    # Consulta para obter as vendas por produto com valor total
     cursor.execute('''
-    SELECT vendas.id, vendas.produto_id, vendas.quantidade, vendas.valor_total, vendas.data, produtos.preco, produtos.nome,
-           produtos.preco * vendas.quantidade AS valor_produtos
+    SELECT vendas.id, vendas.produto_id, SUM(vendas.quantidade) as quantidade, SUM(vendas.valor_total) as valor_total, vendas.data, produtos.preco, produtos.nome
     FROM vendas
     INNER JOIN produtos ON vendas.produto_id = produtos.id
+    GROUP BY vendas.produto_id
     ''')
     vendas = cursor.fetchall()
 
-    cursor.execute('SELECT * FROM produtos')
-    produtos = cursor.fetchall()
-    
+    # Consulta para obter o valor total de todas as vendas
+    cursor.execute('SELECT SUM(valor_total) FROM vendas')
+    soma_total_vendas = cursor.fetchone()[0] or 0.0  # Se não houver vendas, retorna 0.0
+
     conn.close()
-    return render_template('index.html', vendas=vendas, produtos=produtos)
+
+    return render_template('index.html', produtos=produtos, vendas=vendas, soma_total_vendas=soma_total_vendas)
 
 @app.route('/cadastrar_produto', methods=['POST'])
 def cadastrar_produto():
     nome = request.form['nome']
     preco = float(request.form['preco'])
     quantidade = int(request.form['quantidade'])
+
     conn = sqlite3.connect('lojista.db')
     cursor = conn.cursor()
     cursor.execute('INSERT INTO produtos (nome, preco, quantidade) VALUES (?, ?, ?)', (nome, preco, quantidade))
     conn.commit()
     conn.close()
+
     return redirect(url_for('index'))
 
 @app.route('/registrar_venda', methods=['POST'])
 def registrar_venda():
-    produto_id = int(request.form['produto_id'])
-    quantidade = int(request.form['quantidade'])
-    data = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     conn = sqlite3.connect('lojista.db')
     cursor = conn.cursor()
-    
-    # Calcula o valor total da venda baseado no preço do produto e quantidade vendida
+
+    produto_id = request.form['produto_id']
+    quantidade = int(request.form['quantidade'])
+
+    # Obter preço do produto
     cursor.execute('SELECT preco FROM produtos WHERE id = ?', (produto_id,))
-    preco_produto = cursor.fetchone()[0]
-    valor_total = preco_produto * quantidade
-    
-    cursor.execute('INSERT INTO vendas (produto_id, quantidade, valor_total, data) VALUES (?, ?, ?, ?)', (produto_id, quantidade, valor_total, data))
-    cursor.execute('UPDATE produtos SET quantidade = quantidade - ? WHERE id = ?', (quantidade, produto_id))
+    preco = cursor.fetchone()[0]
+
+    # Calcular valor total da venda
+    valor_total = quantidade * preco
+
+    # Inserir venda no banco de dados
+    cursor.execute('''
+    INSERT INTO vendas (produto_id, quantidade, valor_total, data)
+    VALUES (?, ?, ?, date('now'))
+    ''', (produto_id, quantidade, valor_total))
+
     conn.commit()
     conn.close()
-    return redirect(url_for('index'))
+
+    return redirect('/')
 
 if __name__ == '__main__':
     init_db()
