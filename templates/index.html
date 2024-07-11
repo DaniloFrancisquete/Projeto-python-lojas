@@ -1,92 +1,18 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Gestão de Loja</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body>
-    <h1>Sistema de Gestão de Loja</h1>
+{% extends 'base.html' %}
 
-    <h2>Produtos</h2>
-    <table>
-        <tr>
-            <th>ID</th>
-            <th>Nome</th>
-            <th>Preço</th>
-            <th>Quantidade</th>
-        </tr>
-        {% for produto in produtos %}
-        <tr>
-            <td>{{ produto[0] }}</td>
-            <td>{{ produto[1] }}</td>
-            <td>{{ produto[2]|format_currency }}</td>
-            <td>{{ produto[3] }}</td>
-        </tr>
-        {% endfor %}
-    </table>
-
-    <h2>Vendas</h2>
-    <table>
-        <tr>
-            <th>ID</th>
-            <th>Produto</th>
-            <th>Quantidade</th>
-            <th>Valor Unitário</th>
-            <th>Valor Total</th>
-            <th>Data</th>
-        </tr>
-        {% for venda in vendas %}
-        <tr>
-            <td>{{ venda[0] }}</td>
-            <td>{{ venda[6] }}</td>
-            <td>{{ venda[2] }}</td>
-            <td>{{ venda[5]|format_currency }}</td>
-            <td>{{ venda[3]|format_currency }}</td>
-            <td>{{ venda[4] }}</td>
-        </tr>
-        {% endfor %}
-        <tr>
-            <td colspan="4" style="text-align: right; font-weight: bold;">Total</td>
-            <td>{{ soma_total_vendas|format_currency }}</td>
-            <td></td>
-        </tr>
-    </table>
-
-    <h2>Cadastrar Produto</h2>
-    <form action="/cadastrar_produto" method="post">
-        <div class="form-group">
-            <label for="nome">Nome do Produto:</label>
-            <input type="text" id="nome" name="nome" required>
-        </div>
-        <div class="form-group">
-            <label for="preco">Preço:</label>
-            <input type="number" id="preco" name="preco" step="0.01" min="0" required>
-        </div>
-        <div class="form-group">
-            <label for="quantidade">Quantidade:</label>
-            <input type="number" id="quantidade" name="quantidade" min="1" required>
-        </div>
-        <button type="submit" class="btn-primary">Cadastrar Produto</button>
-    </form>
-
-    <h2>Registrar Venda</h2>
-    <form action="/registrar_venda" method="post">
-        <div class="form-group">
-            <label for="produto_id">Selecione o Produto:</label>
-            <select id="produto_id" name="produto_id" required>
-                {% for produto in produtos %}
-                <option value="{{ produto[0] }}">{{ produto[1] }}</option>
-                {% endfor %}
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="quantidade">Quantidade:</label>
-            <input type="number" id="quantidade" name="quantidade" min="1" required>
-        </div>
-        <button type="submit" class="btn-primary">Registrar Venda</button>
-    </form>
-
-</body>
-</html>
+{% block content %}
+<div class="container">
+    <h2 class="page-title">Bem-vindo ao Sistema de Gestão de Loja</h2>
+    <p class="description">Este sistema permite que você gerencie produtos, registre vendas e gere relatórios financeiros.</p>
+    <ul class="menu-list">
+        <li class="menu-item"><a class="menu-link" href="{{ url_for('cadastrar_produto') }}">Cadastrar Produto</a></li>
+        <p class="menu-description">Aqui você pode cadastrar os produtos da sua loja.</p>
+        <li class="menu-item"><a class="menu-link" href="{{ url_for('controle_estoque') }}">Controle de Estoque</a></li>
+        <p class="menu-description">Aqui você pode Ter controle do seu estoque.</p>
+        <li class="menu-item"><a class="menu-link" href="{{ url_for('registrar_venda') }}">Registrar Venda</a></li>
+        <p class="menu-description">Aqui você pode Registrar as Vendas do dia-a-dia.</p>
+        <li class="menu-item"><a class="menu-link" href="{{ url_for('gerar_relatorio') }}">Gerar Relatório</a></li>
+        <p class="menu-description">Aqui você pode gerar Relatórios do dia e do mês.</p>
+    </ul>
+</div>
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Registrar Venda</h2>
+    <form method="POST" action="{{ url_for('registrar_venda') }}">
+        <label for="produto_id">Selecione o Produto:</label>
+        <select name="produto_id" id="produto_id">
+            {% for produto in produtos %}
+                <option value="{{ produto[0] }}">{{ produto[1] }} (R${{ '%.2f' % produto[2] }})</option>
+            {% endfor %}
+        </select><br><br>
+        <label for="quantidade">Quantidade:</label>
+        <input type="number" name="quantidade" id="quantidade" min="1" required><br><br>
+        <button type="submit">Registrar Venda</button>
+    </form>
+
+
+    <h2>Vendas Realizadas</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Preço Unitário</th>
+                <th>Preço Total</th>
+                <th>Quantidade</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% set total_preco = 0 %}
+            {% set total_quantidade = 0 %}
+            {% for venda in vendas %}
+                <tr>
+                    <td>{{ venda[0] }}</td>
+                    <td>{{ venda[1] }}</td>
+                    <td>R${{ '%.2f' % venda[2] }}</td>
+                    <td>R${{ '%.2f' % venda[3] }}</td>
+                    <td>{{ venda[4] }}</td>
+                </tr>
+                {% set total_preco = total_preco + venda[3] %}
+                {% set total_quantidade = total_quantidade + venda[4] %}
+            {% endfor %}
+            <tr>
+                <td colspan="3"><strong>Total:</strong></td>
+                <td><strong>R${{ '%.2f' % total_preco }}</strong></td>
+                <td><strong>{{ total_quantidade }}</strong></td>
+            </tr>
+        </tbody>
+    </table>
+    
+
+    <form method="POST" action="{{ url_for('fechar_dia') }}">
+        <button type="submit">Fechar Dia</button>
+    </form>
+{% endblock %}

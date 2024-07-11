@@ -1,0 +1,55 @@
+<!-- gerar_relatorio.html -->
+
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Relatório de Vendas</h2>
+
+    <h3>Vendas do Dia</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Produto</th>
+                <th>Quantidade</th>
+                <th>Valor Total</th>
+                <th>Data</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for venda in vendas_do_dia %}
+                <tr>
+                    <td>{{ venda[0] }}</td>
+                    <td>{{ venda[1] }}</td>
+                    <td>{{ venda[2] }}</td>
+                    <td>R${{ '%.2f' % venda[3] }}</td>
+                    <td>{{ venda[4] }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h3>Vendas do Mês</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Data</th>
+                <th>Total de Vendas</th>
+                <th>Total de Valor</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for venda_mes in vendas_do_mes %}
+                <tr>
+                    <td>{{ venda_mes[0] }}</td>
+                    <td>{{ venda_mes[1] }}</td>
+                    <td>R${{ '%.2f' % venda_mes[2] }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <form method="POST" action="{{ url_for('fechar_mes') }}">
+        <button type="submit">Fechar Mês</button>
+    </form>
+{% endblock %}
