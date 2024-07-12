@@ -14,7 +14,6 @@
         <button type="submit">Registrar Venda</button>
     </form>
 
-
     <h2>Vendas Realizadas</h2>
     <table>
         <thead>
@@ -24,6 +23,7 @@
                 <th>Preço Unitário</th>
                 <th>Preço Total</th>
                 <th>Quantidade</th>
+                <th>Ações</th>
             </tr>
         </thead>
         <tbody>
@@ -36,6 +36,10 @@
                     <td>R${{ '%.2f' % venda[2] }}</td>
                     <td>R${{ '%.2f' % venda[3] }}</td>
                     <td>{{ venda[4] }}</td>
+                    <td>
+                        <a href="{{ url_for('editar_venda', venda_id=venda[0]) }}"><i class="fas fa-edit"></i></a>
+                        <a href="{{ url_for('excluir_venda', venda_id=venda[0]) }}" onclick="return confirm('Tem certeza que deseja excluir esta venda?');"><i class="fas fa-trash-alt"></i></a>
+                    </td>
                 </tr>
                 {% set total_preco = total_preco + venda[3] %}
                 {% set total_quantidade = total_quantidade + venda[4] %}
@@ -44,12 +48,12 @@
                 <td colspan="3"><strong>Total:</strong></td>
                 <td><strong>R${{ '%.2f' % total_preco }}</strong></td>
                 <td><strong>{{ total_quantidade }}</strong></td>
+                <td></td>
             </tr>
         </tbody>
     </table>
-    
 
     <form method="POST" action="{{ url_for('fechar_dia') }}">
-        <button type="submit">Fechar Dia</button>
+        <button type="submit">Fechar Venda </button>
     </form>
 {% endblock %}

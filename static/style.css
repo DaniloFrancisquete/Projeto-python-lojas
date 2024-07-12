@@ -98,3 +98,26 @@ footer {
     color: #777;
 }
 
+
+/* Estilos para ícones de ação */
+.action-icon {
+    color: #007bff; /* Azul para os ícones */
+    font-size: 1.2em; /* Tamanho dos ícones */
+    margin: 0 5px; /* Espaçamento entre ícones */
+    text-decoration: none; /* Remover sublinhado dos links */
+    display: inline-flex;
+    align-items: center;
+}
+
+.action-button {
+    background: none; /* Remover fundo do botão */
+    border: none; /* Remover borda do botão */
+    color: inherit; /* Cor herdada */
+    cursor: pointer; /* Mostrar cursor de link */
+    display: inline-flex;
+    align-items: center;
+}
+
+.action-icon:hover, .action-button:hover {
+    color: #0056b3; /* Cor ao passar o mouse */
+}

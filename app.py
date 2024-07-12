@@ -65,8 +65,20 @@ def cadastrar_produto():
     
     return render_template('cadastrar_produto.html')
 
+@app.route('/excluir_venda/<int:venda_id>', methods=['GET', 'POST'])
+def excluir_venda(venda_id):
+    conn = sqlite3.connect('lojista.db')
+    cursor = conn.cursor()
+    
+    cursor.execute('DELETE FROM vendas WHERE id = ?', (venda_id,))
+    
+    conn.commit()
+    conn.close()
+    
+    return redirect(url_for('registrar_venda'))
+
 # Função para excluir um produto do banco de dados
-@app.route('/excluir_produto/<int:produto_id>', methods=['POST'])
+@app.route('/excluir_produto/<int:produto_id>', methods=['GET'])
 def excluir_produto(produto_id):
     conn = sqlite3.connect('lojista.db')
     cursor = conn.cursor()
@@ -76,7 +88,85 @@ def excluir_produto(produto_id):
     conn.commit()
     conn.close()
     
-    return redirect(url_for('registrar_venda'))
+    return redirect(url_for('controle_estoque'))
+
+
+@app.route('/editar_produto/<int:produto_id>', methods=['GET', 'POST'])
+def editar_produto(produto_id):
+    if request.method == 'POST':
+        nome = request.form['nome']
+        preco = float(request.form['preco'])
+        quantidade = int(request.form['quantidade'])
+        
+        conn = sqlite3.connect('lojista.db')
+        cursor = conn.cursor()
+        
+        cursor.execute('UPDATE produtos SET nome = ?, preco = ?, quantidade = ? WHERE id = ?', 
+                       (nome, preco, quantidade, produto_id))
+        
+        conn.commit()
+        conn.close()
+        
+        return redirect(url_for('controle_estoque'))
+    
+    conn = sqlite3.connect('lojista.db')
+    cursor = conn.cursor()
+    
+    cursor.execute('SELECT * FROM produtos WHERE id = ?', (produto_id,))
+    produto = cursor.fetchone()
+    
+    conn.close()
+    
+    return render_template('editar_produto.html', produto=produto)
+
+
+@app.route('/editar_venda/<int:venda_id>', methods=['GET', 'POST'])
+def editar_venda(venda_id):
+    if request.method == 'POST':
+        quantidade = int(request.form['quantidade'])
+        conn = sqlite3.connect('lojista.db')
+        cursor = conn.cursor()
+        
+        cursor.execute('SELECT produto_id, quantidade FROM vendas WHERE id = ?', (venda_id,))
+        venda_atual = cursor.fetchone()
+        produto_id = venda_atual[0]
+        quantidade_atual = venda_atual[1]
+
+        cursor.execute('SELECT preco FROM produtos WHERE id = ?', (produto_id,))
+        preco_unitario = cursor.fetchone()[0]
+        valor_total = quantidade * preco_unitario
+
+        cursor.execute('SELECT quantidade FROM produtos WHERE id = ?', (produto_id,))
+        estoque_atual = cursor.fetchone()[0]
+        novo_estoque = estoque_atual + quantidade_atual - quantidade
+
+        if novo_estoque < 0:
+            return "Estoque insuficiente para realizar esta venda."
+
+        cursor.execute('UPDATE produtos SET quantidade = ? WHERE id = ?', (novo_estoque, produto_id))
+        cursor.execute('UPDATE vendas SET quantidade = ?, valor_total = ? WHERE id = ?', (quantidade, valor_total, venda_id))
+        
+        conn.commit()
+        conn.close()
+        
+        return redirect(url_for('registrar_venda'))
+    
+    conn = sqlite3.connect('lojista.db')
+    cursor = conn.cursor()
+    
+    cursor.execute('''
+    SELECT vendas.id, produtos.nome, vendas.valor_total / vendas.quantidade AS preco_unitario, 
+           vendas.valor_total, vendas.quantidade
+    FROM vendas
+    JOIN produtos ON vendas.produto_id = produtos.id
+    WHERE vendas.id = ?
+    ''', (venda_id,))
+    venda = cursor.fetchone()
+    
+    conn.close()
+    
+    return render_template('editar_venda.html', venda=venda)
+
 
 # Função para fechar o dia e gerar relatório
 @app.route('/fechar_dia', methods=['POST'])
@@ -96,7 +186,6 @@ def fechar_dia():
     
     return redirect(url_for('gerar_relatorio'))
 
-# Função para obter vendas realizadas
 def obter_vendas():
     conn = sqlite3.connect('lojista.db')
     cursor = conn.cursor()
@@ -111,7 +200,11 @@ def obter_vendas():
     
     conn.close()
     
+    # Verificar os valores obtidos
+    print(vendas)
+    
     return vendas
+
 
 # Função para registrar uma venda e atualizar o estoque
 @app.route('/registrar_venda', methods=['GET', 'POST'])
