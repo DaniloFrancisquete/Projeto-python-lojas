@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 import sqlite3
 from datetime import date
+from functools import wraps
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'chave_secreta'
@@ -56,7 +57,18 @@ def init_db():
     conn.commit()
     conn.close()
 
+# Função para verificar se o usuário está autenticado
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not session.get('logged_in'):
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+    return decorated_function
+    
+
 @app.route('/login', methods=['GET', 'POST'])
+
 def login():
     if request.method == 'POST':
         username = request.form['username']
@@ -77,6 +89,7 @@ def login():
     return render_template('login.html')
 
 @app.route('/index')
+@login_required
 def base():
     if not session.get('logged_in'):
         return redirect(url_for('login'))
@@ -93,6 +106,7 @@ def logout():
     return redirect(url_for('login'))
 
 @app.route('/cadastrar_produto', methods=['GET', 'POST'])
+@login_required
 def cadastrar_produto():
     if request.method == 'POST':
         nome = request.form['nome']
@@ -112,6 +126,7 @@ def cadastrar_produto():
     return render_template('cadastrar_produto.html')
 
 @app.route('/cadastro', methods=['GET', 'POST'])
+@login_required
 def cadastro():
     if request.method == 'POST':
         username = request.form['username']
@@ -135,6 +150,7 @@ def cadastro():
     return render_template('cadastro.html')
 
 @app.route('/excluir_venda/<int:venda_id>', methods=['GET', 'POST'])
+@login_required
 def excluir_venda(venda_id):
     conn = sqlite3.connect('lojista.db')
     cursor = conn.cursor()
@@ -160,6 +176,7 @@ def excluir_produto(produto_id):
 
 
 @app.route('/fechar_caixa', methods=['POST'])
+@login_required
 def fechar_caixa():
     conn = sqlite3.connect('lojista.db')
     cursor = conn.cursor()
@@ -183,6 +200,7 @@ def fechar_caixa():
 
 
 @app.route('/editar_produto/<int:produto_id>', methods=['GET', 'POST'])
+@login_required
 def editar_produto(produto_id):
     if request.method == 'POST':
         nome = request.form['nome']
@@ -211,6 +229,7 @@ def editar_produto(produto_id):
     return render_template('editar_produto.html', produto=produto)
 
 @app.route('/editar_venda/<int:venda_id>', methods=['GET', 'POST'])
+@login_required
 def editar_venda(venda_id):
     if request.method == 'POST':
         quantidade = int(request.form['quantidade'])
@@ -258,6 +277,7 @@ def editar_venda(venda_id):
     return render_template('editar_venda.html', venda=venda)
 
 @app.route('/vendas_diarias', methods=['GET', 'POST'])
+@login_required
 def vendas_diarias():
     conn = sqlite3.connect('lojista.db')
     cursor = conn.cursor()
@@ -276,6 +296,7 @@ def vendas_diarias():
 
 
 @app.route('/limpar_vendas_diarias', methods=['POST'])
+@login_required
 def limpar_vendas_diarias():
     conn = sqlite3.connect('lojista.db')
     cursor = conn.cursor()
@@ -310,6 +331,7 @@ def obter_vendas():
 
 # Rota para registrar uma nova venda
 @app.route('/registrar_venda', methods=['GET', 'POST'])
+@login_required
 def registrar_venda():
     if request.method == 'POST':
         produto_id = int(request.form['produto_id'])
@@ -365,6 +387,7 @@ def registrar_venda():
 
 
 @app.route('/controle_estoque')
+@login_required
 def controle_estoque():
     conn = sqlite3.connect('lojista.db')
     cursor = conn.cursor()
