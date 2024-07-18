@@ -126,7 +126,6 @@ def cadastrar_produto():
     return render_template('cadastrar_produto.html')
 
 @app.route('/cadastro', methods=['GET', 'POST'])
-@login_required
 def cadastro():
     if request.method == 'POST':
         username = request.form['username']
