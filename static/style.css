@@ -1,29 +1,395 @@
-body {
-    background-color: #f8f9fa;
+
+
+header {
+    background-color: #11557C;
+    color: white;
+    padding: 20px;
+    text-align: center;
 }
 
-h1 {
-    color: #007bff;
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    color: #333;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Garante que o corpo ocupe pelo menos a altura da tela inteira */
+}
+
+header {
+    background-color: #11557C;
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+main {
+    flex: 1; /* Ocupa todo o espaço restante */
+    padding: 20px;
+    box-sizing: border-box; /* Considera o padding no cálculo do tamanho */
+    overflow: auto; /* Adiciona barra de rolagem se necessário */
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+footer {
+    background-color: #11557C;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    border-top: 2px solid #ddd; /* Borda superior */
+    margin-top: auto; /* Empurra o footer para a parte inferior da tela */
+    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
 }
 
 h2 {
-    margin-top: 40px;
+    color: #11557C;
+    border-bottom: 2px solid #11557C;
+    padding-bottom: 10px;
+    margin-top: 0; /* Remove o espaço extra acima do título */
 }
 
-table {
+form {
+    background-color: #fff;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+form label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+form select,
+form input[type="number"],
+form button {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+form button {
+    background-color: #11557C;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+form button:hover {
+    background-color: #0d3d5c; /* Escurece um pouco ao passar o mouse */
+}
+
+.table-container {
+    overflow-y: auto; /* Adiciona uma barra de rolagem vertical, se necessário */
+}
+
+.tabela-vendas {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+}
+
+.tabela-vendas th,
+.tabela-vendas td {
+    padding: 12px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+.tabela-vendas th {
+    background-color: #f2f2f2;
+}
+
+.tabela-vendas tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.tabela-vendas tr:hover {
+    background-color: #f1f1f1;
+}
+
+.tabela-vendas button {
+    background-color: #f44336;
+    color: #fff;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.tabela-vendas button:hover {
+    background-color: #e53935; /* Escurece um pouco ao passar o mouse */
+}
+
+/* Estilos para ícones de ação */
+.action-icon {
+    color: #007bff; /* Azul para os ícones */
+    font-size: 1.2em; /* Tamanho dos ícones */
+    margin: 0 5px; /* Espaçamento entre ícones */
+    text-decoration: none; /* Remover sublinhado dos links */
+    display: inline-flex;
+    align-items: center;
+}
+
+.action-button {
+    background: none; /* Remover fundo do botão */
+    border: none; /* Remover borda do botão */
+    color: inherit; /* Cor herdada */
+    cursor: pointer; /* Mostrar cursor de link */
+    display: inline-flex;
+    align-items: center;
+}
+
+.action-icon:hover,
+.action-button:hover {
+    color: #0056b3; /* Cor ao passar o mouse */
+}
+/* Estilos para o formulário de cadastro de produto */
+
+.form-container {
+    max-width: 600px; /* Define a largura máxima do formulário */
+    margin: auto; /* Centraliza o formulário na página */
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.form-container h2 {
+    color: #11557C;
+    border-bottom: 2px solid #11557C;
+    padding-bottom: 10px;
+    margin-top: 0;
+    text-align: center;
+}
+
+.form-container form {
     margin-top: 20px;
+}
+
+.form-container label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+.form-container input[type="text"],
+.form-container input[type="number"] {
+    width: calc(100% - 20px); /* Ajusta a largura para incluir o padding */
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+
+.form-container button[type="submit"] {
+    background-color: #11557C;
+    color: #fff;
+    border: none;
+    padding: 12px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.form-container button[type="submit"]:hover {
+    background-color: #0d3d5c; /* Escurece um pouco ao passar o mouse */
+}
+
+
+
+.table-container {
+    max-width: 800px; /* Define a largura máxima da tabela */
+    margin: auto; /* Centraliza a tabela na página */
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    overflow: auto; /* Adiciona barra de rolagem se necessário */
+}
+
+.tabela-estoque {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.tabela-estoque th,
+.tabela-estoque td {
+    padding: 12px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+.tabela-estoque th {
+    background-color: #f2f2f2;
+}
+
+.tabela-estoque tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.tabela-estoque tr:hover {
+    background-color: #f1f1f1;
+}
+
+.tabela-estoque a {
+    color: #007bff; /* Cor dos ícones de ação */
+    margin-right: 10px; /* Espaçamento entre os ícones */
+}
+
+.tabela-estoque a:hover {
+    color: #0056b3; /* Cor ao passar o mouse nos ícones */
+}
+
+/* Estilos avançados para a página de registrar venda e vendas realizadas */
+
+.form-container {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.form-group {
+    margin-bottom: 15px;
 }
 
 .form-group label {
     font-weight: bold;
 }
 
-.btn-primary {
-    background-color: #007bff;
-    border-color: #007bff;
+.form-control {
+    width: calc(100% - 22px); /* Ajuste para a largura do input */
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
 }
 
-.btn-primary:hover {
-    background-color: #0056b3;
-    border-color: #004085;
+.btn {
+    background-color: #11557C;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn:hover {
+    background-color: #0d3d5c;
+}
+
+.table-container {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+.table-responsive {
+    overflow-x: auto;
+}
+
+.tabela-vendas {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.tabela-vendas th,
+.tabela-vendas td {
+    padding: 12px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+.tabela-vendas th {
+    background-color: #f2f2f2;
+}
+
+.tabela-vendas tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.tabela-vendas tr:hover {
+    background-color: #f1f1f1;
+}
+
+.action-icon {
+    color: #007bff;
+    font-size: 1.2em;
+    margin-right: 10px;
+    text-decoration: none;
+}
+
+.action-icon:hover {
+    color: #0056b3;
+}
+
+
+
+.page-title {
+    color: #11557C;
+    border-bottom: 2px solid #11557C;
+    padding-bottom: 10px;
+    margin-top: 0;
+}
+
+.description {
+    color: #333;
+    font-size: 1.1em;
+    margin-bottom: 20px;
+}
+
+.menu-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+    gap: 12px;
+}
+
+.menu-item {
+    width: calc(33.33% - 20px);
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    transition: transform 0.3s ease;
+}
+
+.menu-item:hover {
+    transform: translateY(-5px);
+}
+
+.menu-link {
+    color: #11557C;
+    font-weight: bold;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.menu-link:hover {
+    color: #0d3d5c;
+}
+
+.menu-description {
+    color: #666;
+    font-size: 0.9em;
+    margin-top: 10px;
 }

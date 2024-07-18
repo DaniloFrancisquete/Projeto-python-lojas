@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Gestão de Loja</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+       
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        nav ul {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            margin: 10px 0 0 0;
+        }
+        nav ul li {
+            margin: 0 15px;
+        }
+        nav ul li a {
+            text-decoration: none;
+            color: white;
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        nav ul li a:hover {
+            background-color: #007BFF;
+        }
+       
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        button {
+            background-color: #007BFF;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        input, select {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Sistema de Gestão de Loja</h1>
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('index') }}">Página Inicial</a></li>
+                <li><a href="{{ url_for('cadastrar_produto') }}">Cadastrar Produto</a></li>
+                <li><a href="{{ url_for('controle_estoque') }}">Controle de Estoque</a></li>
+                <li><a href="{{ url_for('registrar_venda') }}">Registrar Venda</a></li>
+                <li><a href="{{ url_for('vendas_diarias') }}">Vendas Diárias</a></li>
+                {% if session.logged_in %}
+                <li><a href="{{ url_for('logout') }}">Sair</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        {% block content %}
+        <!-- Este bloco será substituído pelo conteúdo específico de cada página -->
+        {% endblock %}
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Sistema de Gestão de Loja. Todos os direitos reservados.</p>
+    </footer>
+</body>
+</html>

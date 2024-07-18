@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <main>
+        <div class="container">
+            <div class="form-container">
+                <h2>Registrar Venda</h2>
+                <form method="POST" action="{{ url_for('registrar_venda') }}">
+                    <div class="form-group">
+                        <label for="produto_id">Selecione o Produto:</label>
+                        <select name="produto_id" id="produto_id" class="form-control">
+                            {% for produto in produtos %}
+                                <option value="{{ produto[0] }}">{{ produto[1] }} (R${{ '%.2f' % produto[2] }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="quantidade">Quantidade:</label>
+                        <input type="number" name="quantidade" id="quantidade" min="1" class="form-control" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Registrar Venda</button>
+                </form>
+            </div>
+
+            <div class="table-container">
+                <h2>Vendas Realizadas</h2>
+                <div class="table-responsive">
+                    <table class="table tabela-vendas">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nome</th>
+                                <th>Preço Unitário</th>
+                                <th>Preço Total</th>
+                                <th>Quantidade</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for venda in vendas %}
+                                <tr>
+                                    <td>{{ venda[0] }}</td>
+                                    <td>{{ venda[1] }}</td>
+                                    <td>R${{ '%.2f' % venda[2] }}</td>
+                                    <td>R${{ '%.2f' % venda[3] }}</td>
+                                    <td>{{ venda[4] }}</td>
+                                    <td>
+                                        <a href="{{ url_for('editar_venda', venda_id=venda[0]) }}" class="action-icon"><i class="fas fa-edit"></i></a>
+                                        <a href="{{ url_for('excluir_venda', venda_id=venda[0]) }}" onclick="return confirm('Tem certeza que deseja excluir esta venda?');" class="action-icon"><i class="fas fa-trash-alt"></i></a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            <tr>
+                                <td colspan="3"><strong>Sub-Total:</strong></td>
+                                <td><strong>R${{ '%.2f' % total_preco }}</strong></td>
+                                <td><strong>{{ total_quantidade }}</strong></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <form method="POST" action="{{ url_for('fechar_caixa') }}">
+                        <button type="submit" class="btn btn-danger">Fechar Caixa</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock %}
