@@ -84,6 +84,7 @@
                 <li><a href="{{ url_for('cadastrar_produto') }}">Cadastrar Produto</a></li>
                 <li><a href="{{ url_for('controle_estoque') }}">Controle de Estoque</a></li>
                 <li><a href="{{ url_for('registrar_venda') }}">Registrar Venda</a></li>
+                <li><a href="{{ url_for('vendas_diarias') }}">Vendas Diárias</a></li>
                 {% if session.logged_in %}
                 <li><a href="{{ url_for('logout') }}">Sair</a></li>
                 {% endif %}

@@ -158,6 +158,30 @@ def excluir_produto(produto_id):
 
     return redirect(url_for('controle_estoque'))
 
+
+@app.route('/fechar_caixa', methods=['POST'])
+def fechar_caixa():
+    conn = sqlite3.connect('lojista.db')
+    cursor = conn.cursor()
+
+    # Obtém todas as vendas registradas hoje
+    cursor.execute('SELECT * FROM vendas WHERE data = ?', (date.today().isoformat(),))
+    vendas_diarias = cursor.fetchall()
+
+    # Insere as vendas diárias na tabela vendas_diarias
+    for venda in vendas_diarias:
+        cursor.execute('INSERT INTO vendas_diarias (produto_id, quantidade, valor_total, data) VALUES (?, ?, ?, ?)',
+                       (venda[1], venda[2], venda[3], venda[4]))
+
+    # Limpa a tabela de vendas diárias para o próximo dia
+    cursor.execute('DELETE FROM vendas WHERE data = ?', (date.today().isoformat(),))
+
+    conn.commit()
+    conn.close()
+
+    return redirect(url_for('index'))
+
+
 @app.route('/editar_produto/<int:produto_id>', methods=['GET', 'POST'])
 def editar_produto(produto_id):
     if request.method == 'POST':
@@ -232,6 +256,36 @@ def editar_venda(venda_id):
     conn.close()
 
     return render_template('editar_venda.html', venda=venda)
+
+@app.route('/vendas_diarias', methods=['GET', 'POST'])
+def vendas_diarias():
+    conn = sqlite3.connect('lojista.db')
+    cursor = conn.cursor()
+
+    cursor.execute('''
+        SELECT vendas_diarias.id, produtos.nome, vendas_diarias.quantidade, 
+               vendas_diarias.valor_total, vendas_diarias.data
+        FROM vendas_diarias
+        JOIN produtos ON vendas_diarias.produto_id = produtos.id
+    ''')
+    vendas_diarias = cursor.fetchall()
+
+    conn.close()
+
+    return render_template('vendas_diarias.html', vendas_diarias=vendas_diarias)
+
+
+@app.route('/limpar_vendas_diarias', methods=['POST'])
+def limpar_vendas_diarias():
+    conn = sqlite3.connect('lojista.db')
+    cursor = conn.cursor()
+
+    cursor.execute('DELETE FROM vendas_diarias')
+
+    conn.commit()
+    conn.close()
+
+    return redirect(url_for('vendas_diarias'))
 
 
 # Função para obter todas as vendas registradas

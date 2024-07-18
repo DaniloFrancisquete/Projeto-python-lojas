@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <main>
+        <div class="container">
+            <h2>Vendas Diárias</h2>
+            <div class="table-responsive">
+                <table class="table tabela-vendas">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Produto</th>
+                            <th>Quantidade</th>
+                            <th>Valor Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for venda in vendas_diarias %}
+                            <tr>
+                                <td>{{ venda[0] }}</td>  {# ID da venda diária #}
+                                <td>{{ venda[1] }}</td>  {# Nome do produto #}
+                                <td>{{ venda[2] }}</td>  {# Quantidade vendida #}
+                                <td>R${{ venda[4] }}</td>  {# Data da venda #}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Botão para limpar a tabela -->
+            <form method="POST" action="{{ url_for('limpar_vendas_diarias') }}">
+                <button type="submit" class="btn btn-danger">Limpar Tabela de Vendas Diárias</button>
+            </form>
+        </div>
+    </main>
+{% endblock %}
